@@ -1,6 +1,7 @@
 const express = require('express');
 var dotenv = require('dotenv').config();
 var Twitter = require('twitter');
+var ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/V3');
 
 const app = express();
 let userTweets = [];
@@ -10,6 +11,12 @@ var twClient = new Twitter({
   consumer_secret: process.env.REACT_APP_TW_CONSUMER_SECRET,
   access_token_key: process.env.REACT_APP_TW_ACCESS_TOKEN_KEY,
   access_token_secret: process.env.REACT_APP_TW_ACCESS_TOKEN_SECRET
+});
+
+var tone_analyzer = new ToneAnalyzerV3({
+  username: process.env.REACT_APP_WATSON_TONE_USERNAME,
+  password: process.env.REACT_APP_WATSON_TONE_PASSWORD,
+  version_date: process.env.REACT_APP_WATSON_TONE_VERSION_DATE
 });
 
 app.set('port', (process.env.PORT || 3001));
@@ -46,6 +53,7 @@ function getTweets(user_params) {
 }
 
 function gotUserTweets(err, data, response) {
+  userTweets = [];
   var tweets = data;
   for (key in tweets) {
     // console.log(tweets[key].text);
@@ -65,8 +73,27 @@ app.get('/twit/:username', (req, res) => {
   getTweets(twParams);
   // console.log(userTweets);
   var allUserTweets = userTweets.join(" ");
+  var toneResults = {};
 
-  res.send(allUserTweets);
+  if(allUserTweets){
+    var inputText = {
+      text: allUserTweets
+    }
+
+    tone_analyzer.tone(inputText, getTone);
+  }
+
+  function getTone(err, tone) {
+    if (err)
+      console.log(err);
+    else
+      var toneOverview = tone.document_tone;
+      toneResults = JSON.stringify(toneOverview, null, 2);
+      res.send(toneOverview);
+      // console.log(toneResults);
+  }
+
+  // res.send(toneResults);
 });
 
 app.listen(app.get('port'), () => {
