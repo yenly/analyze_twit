@@ -1,6 +1,15 @@
 const express = require('express');
+var dotenv = require('dotenv').config();
+var Twitter = require('twitter');
 
 const app = express();
+
+var twClient = new Twitter({
+  consumer_key: process.env.REACT_APP_TW_CONSUMER_KEY,
+  consumer_secret: process.env.REACT_APP_TW_CONSUMER_SECRET,
+  access_token_key: process.env.REACT_APP_TW_ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.REACT_APP_TW_ACCESS_TOKEN_SECRET
+});
 
 app.set('port', (process.env.PORT || 3001));
 
@@ -30,12 +39,13 @@ app.get('/users', (req, res) => {
   res.send(users);
 });
 
-app.get('/api/food', (req, res) => {
-  let food = {
-    dinner: "Me hungry!"
-  }
+app.get('/twit', (req, res) => {
+  var params = {screen_name: 'nodejs'};
+  twClient.get('statuses/user_timeline', params, function(error, tweets, response) {
+    console.log(error, response);
+  });
   console.log("hey");
-  res.send(food);
+  res.send("food");
 });
 
 app.listen(app.get('port'), () => {
