@@ -3,6 +3,7 @@ var dotenv = require('dotenv').config();
 var Twitter = require('twitter');
 
 const app = express();
+let userTweets = [];
 
 var twClient = new Twitter({
   consumer_key: process.env.REACT_APP_TW_CONSUMER_KEY,
@@ -39,13 +40,33 @@ app.get('/users', (req, res) => {
   res.send(users);
 });
 
-app.get('/twit', (req, res) => {
-  var params = {screen_name: 'nodejs'};
-  twClient.get('statuses/user_timeline', params, function(error, tweets, response) {
-    console.log(error, response);
-  });
-  console.log("hey");
-  res.send("food");
+function getTweets(user_params) {
+  // console.log("Attempt to connect using: ", user_params);
+  twClient.get('statuses/user_timeline', user_params, gotUserTweets);
+}
+
+function gotUserTweets(err, data, response) {
+  var tweets = data;
+  for (key in tweets) {
+    // console.log(tweets[key].text);
+    userTweets.push(tweets[key].text);
+
+    // console.log(userTweets);
+  }
+}
+
+app.get('/twit/:username', (req, res) => {
+  var data = req.params;
+  var twParams = {
+    screen_name: data.username,
+    count: 100,
+    include_rts: false
+  }
+  getTweets(twParams);
+  // console.log(userTweets);
+  var allUserTweets = userTweets.join(" ");
+
+  res.send(allUserTweets);
 });
 
 app.listen(app.get('port'), () => {
