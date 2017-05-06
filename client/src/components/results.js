@@ -29,7 +29,7 @@ class Results extends Component {
     // console.log(this.state.userTone);
     return (
       <div>
-        <h2>Results: @{this.state.username}</h2>
+        <h2>Results for @{this.state.username}</h2>
         <ToneChart userTone={this.state.userTone} />
       </div>
     )

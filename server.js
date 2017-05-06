@@ -67,7 +67,7 @@ app.get('/twit/:username', (req, res) => {
   var data = req.params;
   var twParams = {
     screen_name: data.username,
-    count: 100,
+    count: 200,
     include_rts: false
   }
   getTweets(twParams);
