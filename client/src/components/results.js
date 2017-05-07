@@ -25,14 +25,29 @@ class Results extends Component {
       return (
         <div>Analyzing...</div>
       )
+    } else {
+      const [emotionTone, langTone, socialTone] = this.state.userTone;
+
+      return (
+        <div>
+          <h2>Results for @{this.state.username}</h2>
+          <div className='tone_charts'>
+            {emotionTone &&
+              <ToneChart userTone={emotionTone} />
+            }
+            {langTone &&
+              <ToneChart userTone={langTone} />
+            }
+            {socialTone &&
+              <ToneChart userTone={socialTone} />
+            }
+          </div>
+
+          {/* <div>{JSON.stringify(this.state.userTone, null, 2)}</div> */}
+        </div>
+      )
     }
-    // console.log(this.state.userTone);
-    return (
-      <div>
-        <h2>Results for @{this.state.username}</h2>
-        <ToneChart userTone={this.state.userTone} />
-      </div>
-    )
+
   }
 }
 
