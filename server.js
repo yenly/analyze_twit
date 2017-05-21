@@ -4,7 +4,8 @@ var Twitter = require('twitter');
 var ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/V3');
 
 const app = express();
-let userTweets = [];
+// let userTweets = [];
+let allUserTweets = '';
 
 var twClient = new Twitter({
   consumer_key: process.env.REACT_APP_TW_CONSUMER_KEY,
@@ -50,30 +51,38 @@ app.get('/users', (req, res) => {
 function getTweets(user_params) {
   // console.log("Attempt to connect using: ", user_params);
   twClient.get('statuses/user_timeline', user_params, gotUserTweets);
-}
 
-function gotUserTweets(err, data, response) {
-  userTweets = [];
-  var tweets = data;
-  for (key in tweets) {
-    // console.log(tweets[key].text);
-    userTweets.push(tweets[key].text);
+  function gotUserTweets(err, data, response) {
+    let userTweets = [];
+    var tweets = data;
+    for (key in tweets) {
+      // console.log(tweets[key].text);
+      userTweets.push(tweets[key].text);
 
-    // console.log(userTweets);
+      // console.log(userTweets);
+    }
+    //console.log('inside gotUserTweets: ', userTweets);
+    allUserTweets = userTweets.join(" ");
   }
 }
 
 app.get('/twit/:username', (req, res) => {
   var data = req.params;
+  console.log(data.username);
+
   var twParams = {
     screen_name: data.username,
     count: 200,
     include_rts: false
   }
+  //allUserTweets = '';
+  console.log(twParams);
   getTweets(twParams);
-  // console.log(userTweets);
-  var allUserTweets = userTweets.join(" ");
+
+
   var toneResults = {};
+
+  //console.log('after getTweets: ', allUserTweets);
 
   if(allUserTweets){
     var inputText = {

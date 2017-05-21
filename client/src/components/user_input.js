@@ -10,13 +10,14 @@ class UserInput extends Component {
 
   handleChange = (event) => {
     let userValue = event.target.value;
+    //console.log(userValue);
 
     this.setState({ twUsername: userValue })
   }
 
   handleSubmit = (event) => {
-    event.preventDefault(event);
-
+    event.preventDefault();
+    // console.log(this.state.twUsername);
     this.props.onSubmit(this.state.twUsername)
   }
 

@@ -6,6 +6,8 @@ class Results extends Component {
   constructor(props) {
     super(props);
 
+    // console.log(props);
+
     this.state = {
       username: props.user,
       userTone: [],
@@ -14,7 +16,8 @@ class Results extends Component {
   }
 
   componentDidMount() {
-    Client.analyzeTone(this.state.twUsername).then(data => {
+    // console.log(this.state.username);
+    Client.analyzeTone(this.state.username).then(data => {
       // console.log(data);
       this.setState({ userTone: data.tone_categories });
     });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { VictoryBar, VictoryChart, VictoryAxis, VictoryLabel, VictoryTheme } from 'victory';
+import { VictoryBar, VictoryChart, VictoryAxis, VictoryLabel } from 'victory';
 
 const ToneChart = ({userTone}) => {
   const toneLabels = userTone.tones.map(tone => {
